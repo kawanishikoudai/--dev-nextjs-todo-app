@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchTodos, addTodo, updateTodo, deleteTodo } from "./api/todoApi";
+import { useRouter } from "next/navigation";
 
 type Todo = {
     id: number;
@@ -13,11 +14,18 @@ type Todo = {
 };
 
 export default function Home() {
+    const router = useRouter();
+
     const [todos, setTodos] = useState<Todo[]>([]);
     const [title, setTitle] = useState("");
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            router.push("/login");
+            return;
+        }
         fetchTodos().then((data) => setTodos(data));
     }, []);
 
